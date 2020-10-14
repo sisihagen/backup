@@ -1,0 +1,8 @@
+/etc/davfs2
+/etc/postfix
+/etc/dovecot
+/etc/rspamd
+/etc/munin
+/usr/local/bin
+/var/lib/rspamd
+/var/lib/munin

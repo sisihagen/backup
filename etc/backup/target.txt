@@ -1,0 +1,8 @@
+/backup/etc/davfs2
+/backup/etc/postfix
+/backup/etc/dovecot
+/backup/etc/rspamd
+/backup/etc/munin
+/backup/usr/local/bin
+/backup/var/lib/rspamd
+/backup/var/lib/munin

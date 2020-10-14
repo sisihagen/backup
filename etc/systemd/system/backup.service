@@ -1,0 +1,6 @@
+[Unit]
+Description="make the backup"
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/backup.sh
