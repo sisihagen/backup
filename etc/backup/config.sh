@@ -4,29 +4,26 @@
 ### Simple Public License (SimPL) ###
 
 # cloud soulution
-hidrive='no'
-magenta='no'
+hidrive='yes'
+archive='no'
 hetzner='no'
 netcup='no'
-file='no'
 
-# hardware
-usb='no'
+# HiDrive User
+hidrive_user='silviosiefke'
 
 # mysql
 mysql='no'
 
 # borg init
-borg-init-hidrive='no'
-borg-init-magenta='no'
-borg-init-hetzner='no'
-borg-init-netcup='no'
-borg-init-usb='no'
+borg_init_hidrive='no'
+borg_init_hetzner='no'
+borg_init_netcup='no'
 
 # mail (install mutt or mpack or when you have installed postfix or other you can activate local)
 mutt='no'
 local='no'
-mpack='yes'
+mpack='no'
 recipient='siefke@mail.ru'
 
 # passwords

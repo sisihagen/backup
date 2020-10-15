@@ -19,23 +19,47 @@ tar -cf $tmp_backup_source/"$(hostname)-$(date '+%Y-%m-%d').tar.gz" $backup_sour
 echo "$(date) --- crypt the archive"
 
 # encrpt the backup
-gpg --batch --yes --trust-model always -r $mail_gnupg_id -e "$(hostname)-$(date '+%Y-%m-%d').tar.gz"
+if [[ -f "$tmp_backup_source/$(hostname)-$(date '+%Y-%m-%d').tar.gz" ]]; then
+  gpg --batch --yes --trust-model always -r $mail_gnupg_id -e $tmp_backup_source/"$(hostname)-$(date '+%Y-%m-%d').tar.gz"
+fi
+
+if [[ -f "$tmp_backup_source/$(hostname)-$(date '+%Y-%m-%d').tar.gz.gpg" ]]; then
+  rm $tmp_backup_source/"$(hostname)-$(date '+%Y-%m-%d').tar.gz"
+fi
 
 echo "$(date) --- send the archive to cloud"
 
 # check mount point and copy backup to cloud
-if [[ $(grep -qs "$magenta_mount" /proc/mounts) ]]; then
-  rm $magenta_mount/backup/$(hostname)*
-  cp /tmp/backup/* $magenta_mount/backup/
-else
-  mount $magenta_mount
-  rm $magenta_mount/backup/$(hostname)*
-  cp /tmp/backup/* $magenta_mount/backup/
-fi
+# I send it to magenta cloud
+if [[ -f "$tmp_backup_source/$(hostname)-$(date '+%Y-%m-%d').tar.gz.gpg" ]]; then
 
-echo "clean tmp files"
-if [[ -d "$tmp_backup_source" ]]; then
-  rm $tmp_backup_source/*
+
+  if [[ ! $(mountpoint -q /mnt/m-cloud) ]]; then
+    # check a backup is on cloud
+    if [[ $(ls $magenta_mount/backup | grep $(hostname -s)) ]]; then
+      # when a backup is in cloud we delete older files
+      rm $magenta_mount/backup/$(hostname)-*
+    fi
+
+    if [[ -f "$tmp_backup_source/$(hostname)-$(date '+%Y-%m-%d').tar.gz.gpg" ]]; then
+      # copy new update to cloud
+        mv -v "$tmp_backup_source/$(hostname)-$(date '+%Y-%m-%d').tar.gz.gpg" $magenta_mount/backup/
+      fi
+  else
+    # cloud mounten
+      mount $magenta_mount
+      # run task like before
+    if [[ -f "$magenta_mount/backup/$(hostname)-*" ]]; then
+      # when a backup is in cloud we delete older files
+      rm $magenta_mount/backup/$(hostname)-*
+    fi
+
+    if [[ -f "$tmp_backup_source/$(hostname)-$(date '+%Y-%m-%d').tar.gz" ]]; then
+        # copy new update to cloud
+        mv -v "$tmp_backup_source/$(hostname)-$(date '+%Y-%m-%d').tar.gz.gpg" $magenta_mount/backup/
+      fi
+  fi
+
 fi
 
 echo "$(date) --- archiv backup finished"
